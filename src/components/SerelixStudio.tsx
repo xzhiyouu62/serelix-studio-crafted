@@ -231,6 +231,29 @@ const SerelixStudio = () => {
                         <Badge variant="outline">Campus-focused</Badge>
                         <Badge variant="outline">Community</Badge>
                       </div>
+                      <div className="pt-4">
+                        <motion.div
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full border-primary/50 hover:bg-primary/10"
+                            asChild
+                          >
+                            <a 
+                              href="https://forum.serelix.xyz" 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="flex items-center"
+                            >
+                              <ExternalLink className="w-4 h-4 mr-2" />
+                              Visit Forum
+                            </a>
+                          </Button>
+                        </motion.div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -252,19 +275,36 @@ const SerelixStudio = () => {
                       <Badge variant="secondary">Campus App</Badge>
                     </div>
                     <CardDescription className="text-base">
-                      A comprehensive campus service application connecting students with essential tools and features
+                      A comprehensive campus service application designed to connect students with essential tools and features
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <p className="text-muted-foreground">
-                        Intraverse streamlines campus life by providing students with access to essential services, 
-                        tools, and information in one unified, user-friendly application.
+                        Intraverse simplifies campus life by uniting essential services, tools, and information in one intuitive app for modern students.
                       </p>
                       <div className="flex flex-wrap gap-2">
                         <Badge variant="outline">Student Services</Badge>
                         <Badge variant="outline">Campus Tools</Badge>
                         <Badge variant="outline">Integration</Badge>
+                      </div>
+                      <div className="pt-4">
+                        <motion.div
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full border-primary/50 hover:bg-primary/10"
+                            disabled
+                          >
+                            <span className="flex items-center">
+                              <Calendar className="w-4 h-4 mr-2" />
+                              Coming Soon
+                            </span>
+                          </Button>
+                        </motion.div>
                       </div>
                     </div>
                   </CardContent>
@@ -598,12 +638,12 @@ const SerelixStudio = () => {
                       </motion.div>
                       <h3 className="text-lg font-semibold text-foreground mb-2">Discord</h3>
                       <a 
-                        href="https://discord.gg/SerelixStudio" 
+                        href="https://discord.gg/prF9KwUhGQ" 
                         className="text-primary hover:text-primary-glow transition-colors"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        discord/SerelixStudio
+                        Join our Discord
                       </a>
                     </CardContent>
                   </Card>

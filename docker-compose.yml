@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  serelix-studio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: serelix-studio-app
+    ports:
+      - "10019:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    networks:
+      - serelix-network
+
+networks:
+  serelix-network:
+    driver: bridge
