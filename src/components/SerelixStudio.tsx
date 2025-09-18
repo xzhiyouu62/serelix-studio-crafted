@@ -38,7 +38,7 @@ const SerelixStudio = () => {
     <div className="min-h-screen bg-background">
       {/* Navigation */}
       <motion.nav 
-        className="fixed w-full top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border"
+        className="fixed w-full top-0 z-50 bg-background/90 backdrop-blur-enhanced border-b border-border shadow-blue-glow"
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
@@ -46,7 +46,7 @@ const SerelixStudio = () => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <motion.div 
-              className="text-xl font-bold text-foreground"
+              className="text-xl font-bold text-foreground text-glow"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
@@ -57,11 +57,15 @@ const SerelixStudio = () => {
                 <motion.a
                   key={item}
                   href={`#${item.toLowerCase()}`}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-muted-foreground hover:text-primary transition-colors relative"
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ y: -2, transition: { duration: 0.2 } }}
+                  whileHover={{ 
+                    y: -2, 
+                    transition: { duration: 0.2 },
+                    textShadow: "0 0 8px rgba(59, 130, 246, 0.8)"
+                  }}
                 >
                   {item}
                 </motion.a>
@@ -72,11 +76,15 @@ const SerelixStudio = () => {
       </motion.nav>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-20 px-6">
-        <div className="container mx-auto text-center">
+      <section className="pt-24 pb-20 px-6 relative overflow-hidden">
+        {/* Background glow effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-background"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
+        
+        <div className="container mx-auto text-center relative z-10">
           <div className="max-w-4xl mx-auto">
             <motion.h1 
-              className="text-5xl md:text-6xl font-bold text-text-hero mb-6 leading-tight"
+              className="text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight"
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -169,7 +177,7 @@ const SerelixStudio = () => {
                 whileHover={{ scale: 1.03, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="shadow-card hover:shadow-elegant transition-all duration-300 group h-full">
+                <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 group h-full border-glow">
                   <CardHeader>
                     <div className="flex items-center justify-between mb-2">
                       <CardTitle className="text-2xl text-foreground group-hover:text-primary transition-colors">
@@ -205,7 +213,7 @@ const SerelixStudio = () => {
                 whileHover={{ scale: 1.03, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="shadow-card hover:shadow-elegant transition-all duration-300 group h-full">
+                <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 group h-full border-glow">
                   <CardHeader>
                     <div className="flex items-center justify-between mb-2">
                       <CardTitle className="text-2xl text-foreground group-hover:text-primary transition-colors">
@@ -258,11 +266,11 @@ const SerelixStudio = () => {
                 whileHover={{ scale: 1.05, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="shadow-card hover:shadow-elegant transition-all duration-300 text-center h-full">
+                <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 text-center h-full border-glow">
                   <CardHeader>
                     <motion.div 
-                      className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden"
-                      whileHover={{ scale: 1.1 }}
+                      className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-primary/30"
+                      whileHover={{ scale: 1.1, borderColor: "hsl(210 100% 60%)" }}
                       transition={{ duration: 0.3 }}
                     >
                       <img 
@@ -289,11 +297,11 @@ const SerelixStudio = () => {
                 whileHover={{ scale: 1.05, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="shadow-card hover:shadow-elegant transition-all duration-300 text-center h-full">
+                <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 text-center h-full border-glow">
                   <CardHeader>
                     <motion.div 
-                      className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden"
-                      whileHover={{ scale: 1.1 }}
+                      className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-primary/30"
+                      whileHover={{ scale: 1.1, borderColor: "hsl(210 100% 60%)" }}
                       transition={{ duration: 0.3 }}
                     >
                       <img 
@@ -320,11 +328,11 @@ const SerelixStudio = () => {
                 whileHover={{ scale: 1.05, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="shadow-card hover:shadow-elegant transition-all duration-300 text-center h-full">
+                <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 text-center h-full border-glow">
                   <CardHeader>
                     <motion.div 
-                      className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden"
-                      whileHover={{ scale: 1.1 }}
+                      className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-primary/30"
+                      whileHover={{ scale: 1.1, borderColor: "hsl(210 100% 60%)" }}
                       transition={{ duration: 0.3 }}
                     >
                       <img 
@@ -367,13 +375,13 @@ const SerelixStudio = () => {
                   whileHover={{ scale: 1.05, y: -5 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Card className="shadow-card hover:shadow-elegant transition-all duration-300">
+                  <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 border-glow">
                     <CardContent className="p-6 text-center">
                       <motion.div
                         whileHover={{ scale: 1.2, rotate: 5 }}
                         transition={{ duration: 0.3 }}
                       >
-                        <Mail className="w-8 h-8 text-primary mx-auto mb-4" />
+                        <Mail className="w-8 h-8 text-primary mx-auto mb-4 drop-shadow-lg" />
                       </motion.div>
                       <h3 className="text-lg font-semibold text-foreground mb-2">Email</h3>
                       <a 
@@ -392,13 +400,13 @@ const SerelixStudio = () => {
                   whileHover={{ scale: 1.05, y: -5 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Card className="shadow-card hover:shadow-elegant transition-all duration-300">
+                  <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 border-glow">
                     <CardContent className="p-6 text-center">
                       <motion.div
                         whileHover={{ scale: 1.2, rotate: -5 }}
                         transition={{ duration: 0.3 }}
                       >
-                        <MessageCircle className="w-8 h-8 text-primary mx-auto mb-4" />
+                        <MessageCircle className="w-8 h-8 text-primary mx-auto mb-4 drop-shadow-lg" />
                       </motion.div>
                       <h3 className="text-lg font-semibold text-foreground mb-2">Discord</h3>
                       <a 
