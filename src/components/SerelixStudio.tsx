@@ -3,7 +3,7 @@ import { motion, useInView } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Mail, MessageCircle, Github, ExternalLink } from "lucide-react";
+import { Mail, MessageCircle, Github, ExternalLink, Calendar, GitBranch, Rocket, Users, Code2, TestTube } from "lucide-react";
 import kaiyasiAvatar from '@/assets/kaiyasi-avatar.jpg';
 import ytseiungAvatar from '@/assets/ytseiung-avatar.jpg';
 import xzhiyouuAvatar from '@/assets/xzhiyouu-avatar.jpg';
@@ -34,6 +34,24 @@ const SerelixStudio = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'nearest'
+      });
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
@@ -46,14 +64,16 @@ const SerelixStudio = () => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <motion.div 
-              className="text-xl font-bold text-foreground text-glow"
+              className="text-xl font-bold text-foreground text-glow cursor-pointer"
               whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
+              onClick={scrollToTop}
             >
               Serelix Studio
             </motion.div>
             <div className="hidden md:flex space-x-8">
-              {["About", "Projects", "Team", "Contact"].map((item, index) => (
+              {["About", "Projects", "Team", "Timeline", "Contact"].map((item, index) => (
                 <motion.a
                   key={item}
                   href={`#${item.toLowerCase()}`}
@@ -76,7 +96,7 @@ const SerelixStudio = () => {
       </motion.nav>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-20 px-6 relative overflow-hidden">
+      <section className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden">
         {/* Background glow effect */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-background"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
@@ -119,7 +139,12 @@ const SerelixStudio = () => {
                 whileTap={{ scale: 0.95 }}
                 transition={{ duration: 0.2 }}
               >
-                <Button variant="hero" size="lg">
+                <Button 
+                  variant="hero" 
+                  size="lg" 
+                  className="shadow-glow hover:shadow-glow-lg"
+                  onClick={() => scrollToSection('projects')}
+                >
                   <ExternalLink className="w-4 h-4 mr-2" />
                   View Our Work
                 </Button>
@@ -129,7 +154,12 @@ const SerelixStudio = () => {
                 whileTap={{ scale: 0.95 }}
                 transition={{ duration: 0.2 }}
               >
-                <Button variant="outline" size="lg">
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="border-glow hover:shadow-blue-glow"
+                  onClick={() => scrollToSection('contact')}
+                >
                   Get In Touch
                 </Button>
               </motion.div>
@@ -275,11 +305,11 @@ const SerelixStudio = () => {
                     >
                       <img 
                         src={kaiyasiAvatar} 
-                        alt="kaiyasi profile" 
+                        alt="ytseiung profile" 
                         className="w-full h-full object-cover"
                       />
                     </motion.div>
-                    <CardTitle className="text-xl text-foreground">kaiyasi</CardTitle>
+                    <CardTitle className="text-xl text-foreground">ytseiung</CardTitle>
                     <CardDescription>Technical Team Member</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -306,11 +336,11 @@ const SerelixStudio = () => {
                     >
                       <img 
                         src={ytseiungAvatar} 
-                        alt="ytseiung profile" 
+                        alt="kaiyasi profile" 
                         className="w-full h-full object-cover"
                       />
                     </motion.div>
-                    <CardTitle className="text-xl text-foreground">ytseiung</CardTitle>
+                    <CardTitle className="text-xl text-foreground">kaiyasi</CardTitle>
                     <CardDescription>Technical Lead & Studio Manager</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -352,6 +382,164 @@ const SerelixStudio = () => {
                 </Card>
               </motion.div>
             </AnimatedSection>
+          </div>
+        </div>
+      </section>
+
+      {/* Development Timeline Section */}
+      <section id="timeline" className="py-20 bg-section-bg">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <AnimatedSection delay={0}>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Development Timeline</h2>
+            </AnimatedSection>
+            <AnimatedSection delay={0.2}>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Our journey of building innovative applications and growing as a development studio
+              </p>
+            </AnimatedSection>
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+            <div className="relative">
+              {/* Timeline line */}
+              <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-primary/20 via-primary/40 to-primary/20"></div>
+              
+              {/* Timeline items */}
+              <div className="space-y-12">
+                {/* 2024 Q1 - Studio Formation */}
+                <AnimatedSection delay={0.1}>
+                  <div className="flex items-center">
+                    <div className="flex-1 text-right pr-8">
+                      <motion.div
+                        className="bg-card border-glow rounded-lg p-6 shadow-card-blue"
+                        whileHover={{ scale: 1.02, x: -10 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <div className="flex items-center justify-end mb-3">
+                          <Users className="w-6 h-6 text-primary mr-2" />
+                          <h3 className="text-xl font-bold text-foreground">Studio Formation</h3>
+                        </div>
+                        <p className="text-muted-foreground mb-2">
+                          Serelix Studio was founded with the vision of creating modern applications that connect communities.
+                        </p>
+                        <span className="text-sm text-primary font-semibold">Q1 2024</span>
+                      </motion.div>
+                    </div>
+                    <div className="relative z-10">
+                      <div className="w-4 h-4 bg-primary rounded-full border-4 border-background"></div>
+                    </div>
+                    <div className="flex-1 pl-8"></div>
+                  </div>
+                </AnimatedSection>
+
+                {/* 2024 Q2 - Forumkit Concept */}
+                <AnimatedSection delay={0.2}>
+                  <div className="flex items-center">
+                    <div className="flex-1 pr-8"></div>
+                    <div className="relative z-10">
+                      <div className="w-4 h-4 bg-primary rounded-full border-4 border-background"></div>
+                    </div>
+                    <div className="flex-1 text-left pl-8">
+                      <motion.div
+                        className="bg-card border-glow rounded-lg p-6 shadow-card-blue"
+                        whileHover={{ scale: 1.02, x: 10 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <div className="flex items-center mb-3">
+                          <Code2 className="w-6 h-6 text-primary mr-2" />
+                          <h3 className="text-xl font-bold text-foreground">Forumkit Concept</h3>
+                        </div>
+                        <p className="text-muted-foreground mb-2">
+                          Initial concept and design phase for the anonymous forum platform targeting campus communities.
+                        </p>
+                        <span className="text-sm text-primary font-semibold">Q2 2024</span>
+                      </motion.div>
+                    </div>
+                  </div>
+                </AnimatedSection>
+
+                {/* 2024 Q3 - Development Start */}
+                <AnimatedSection delay={0.3}>
+                  <div className="flex items-center">
+                    <div className="flex-1 text-right pr-8">
+                      <motion.div
+                        className="bg-card border-glow rounded-lg p-6 shadow-card-blue"
+                        whileHover={{ scale: 1.02, x: -10 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <div className="flex items-center justify-end mb-3">
+                          <GitBranch className="w-6 h-6 text-primary mr-2" />
+                          <h3 className="text-xl font-bold text-foreground">Development Kickoff</h3>
+                        </div>
+                        <p className="text-muted-foreground mb-2">
+                          Active development phase begins for both Forumkit and Intraverse projects with full team collaboration.
+                        </p>
+                        <span className="text-sm text-primary font-semibold">Q3 2024</span>
+                      </motion.div>
+                    </div>
+                    <div className="relative z-10">
+                      <div className="w-4 h-4 bg-primary rounded-full border-4 border-background"></div>
+                    </div>
+                    <div className="flex-1 pl-8"></div>
+                  </div>
+                </AnimatedSection>
+
+                {/* 2024 Q4 - Beta Testing */}
+                <AnimatedSection delay={0.4}>
+                  <div className="flex items-center">
+                    <div className="flex-1 pr-8"></div>
+                    <div className="relative z-10">
+                      <div className="w-4 h-4 bg-primary rounded-full border-4 border-background"></div>
+                    </div>
+                    <div className="flex-1 text-left pl-8">
+                      <motion.div
+                        className="bg-card border-glow rounded-lg p-6 shadow-card-blue"
+                        whileHover={{ scale: 1.02, x: 10 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <div className="flex items-center mb-3">
+                          <TestTube className="w-6 h-6 text-primary mr-2" />
+                          <h3 className="text-xl font-bold text-foreground">Internal Testing</h3>
+                        </div>
+                        <p className="text-muted-foreground mb-2">
+                          Extensive internal testing and refinement of core features, user interface improvements, and security implementations.
+                        </p>
+                        <span className="text-sm text-primary font-semibold">Q4 2024</span>
+                      </motion.div>
+                    </div>
+                  </div>
+                </AnimatedSection>
+
+                {/* 2025 Q3 - Public Launch */}
+                <AnimatedSection delay={0.5}>
+                  <div className="flex items-center">
+                    <div className="flex-1 text-right pr-8">
+                      <motion.div
+                        className="bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/50 rounded-lg p-6 shadow-glow-lg"
+                        whileHover={{ scale: 1.02, x: -10 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <div className="flex items-center justify-end mb-3">
+                          <Rocket className="w-6 h-6 text-primary mr-2" />
+                          <h3 className="text-xl font-bold text-foreground">Forumkit Launch</h3>
+                        </div>
+                        <p className="text-muted-foreground mb-2">
+                          Official public launch of Forumkit anonymous platform, opening services to university and campus communities.
+                        </p>
+                        <span className="text-sm text-primary font-semibold">September 2025</span>
+                      </motion.div>
+                    </div>
+                    <div className="relative z-10">
+                      <div className="w-6 h-6 bg-primary rounded-full border-4 border-background flex items-center justify-center">
+                        <div className="w-2 h-2 bg-background rounded-full"></div>
+                      </div>
+                    </div>
+                    <div className="flex-1 pl-8"></div>
+                  </div>
+                </AnimatedSection>
+              </div>
+            </div>
           </div>
         </div>
       </section>
