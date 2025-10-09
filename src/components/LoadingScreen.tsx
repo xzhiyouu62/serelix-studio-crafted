@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import serelixLogo from '@/assets/serelix-logo2.png';
 
 interface LoadingScreenProps {
   onLoadingComplete: () => void;
@@ -37,7 +38,7 @@ const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
               className="relative"
             >
               <motion.img
-                src="/serelix-logo2.png"
+                src={serelixLogo}
                 alt="Serelix Studio Logo"
                 className="w-32 h-32 md:w-48 md:h-48 object-contain"
               />
