@@ -8,7 +8,12 @@ export default {
     }
 
     if (request.method !== 'POST') {
-      return new Response('Method not allowed', { status: 405 });
+      return new Response('Method not allowed', { 
+        status: 405,
+        headers: {
+          'Access-Control-Allow-Origin': origin || '*',
+        }
+      });
     }
 
     try {
@@ -37,6 +42,9 @@ export default {
       const cleanSubject = sanitize(subject);
       const cleanMessage = sanitize(message);
 
+      // 準備 IP 位置資訊 (僅顯示 IP 地址)
+      let locationField = { name: '🌐 IP Address', value: clientIP || 'Unknown', inline: false };
+
       const discordMessage = {
         content: 'New Contact Form Submission',
         embeds: [{
@@ -46,7 +54,8 @@ export default {
             { name: 'Name', value: cleanName, inline: true },
             { name: 'Email', value: cleanEmail, inline: true },
             { name: 'Subject', value: cleanSubject, inline: false },
-            { name: 'Message', value: cleanMessage, inline: false }
+            { name: 'Message', value: cleanMessage, inline: false },
+            locationField
           ],
           footer: {
             text: `From IP: ${clientIP}`
@@ -92,11 +101,13 @@ function handleOptions(origin) {
     'https://serelix.xyz',
     'https://www.serelix.xyz',
     'http://localhost:8080',
-    'http://127.0.0.1:8080'
+    'http://127.0.0.1:8080',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173'
   ];
   
   const headers = {
-    'Access-Control-Allow-Origin': allowedOrigins.includes(origin) ? origin : 'https://serelix.xyz',
+    'Access-Control-Allow-Origin': origin || '*',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Max-Age': '86400',
@@ -110,14 +121,16 @@ function jsonResponse(data, status = 200, origin = '') {
     'https://serelix.xyz',
     'https://www.serelix.xyz',
     'http://localhost:8080',
-    'http://127.0.0.1:8080'
+    'http://127.0.0.1:8080',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173'
   ];
   
   return new Response(JSON.stringify(data), {
     status,
     headers: {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': allowedOrigins.includes(origin) ? origin : 'https://serelix.xyz',
+      'Access-Control-Allow-Origin': origin || '*',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
     }
