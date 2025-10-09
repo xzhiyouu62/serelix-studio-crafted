@@ -11,6 +11,7 @@ import { Mail, MessageCircle, Github, ExternalLink, Calendar, GitBranch, Rocket,
 import ytseiungAvatar from '@/assets/ytseiung.jpg';
 import kaiyasiAvatar from '@/assets/kaiyasi.jpg';
 import xzhiyouuAvatar from '@/assets/xzhiyouu.jpg';
+import LoadingScreen from './LoadingScreen';
 
 // Animation component for scroll-triggered animations
 const AnimatedSection = ({ children, delay = 0, className = "" }) => {
@@ -34,6 +35,7 @@ const SerelixStudio = () => {
   const [scrollY, setScrollY] = useState(0);
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showContent, setShowContent] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -117,11 +119,18 @@ const SerelixStudio = () => {
       behavior: 'smooth'
     });
   };
+
+  const handleLoadingComplete = () => {
+    setShowContent(true);
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      {!showContent && <LoadingScreen onLoadingComplete={handleLoadingComplete} />}
+      <div className={`min-h-screen bg-background ${!showContent ? 'opacity-0' : 'opacity-100'} transition-opacity duration-500`}>
       {/* Navigation */}
       <motion.nav 
-        className="fixed w-full top-0 z-50 bg-background/90 backdrop-blur-enhanced border-b border-border shadow-blue-glow"
+        className="fixed w-full top-0 z-50 bg-background/90 backdrop-blur-enhanced border-b border-border"
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
@@ -129,7 +138,7 @@ const SerelixStudio = () => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <motion.div 
-              className="text-xl font-bold text-foreground text-glow cursor-pointer"
+              className="text-xl font-bold text-foreground cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
@@ -148,8 +157,7 @@ const SerelixStudio = () => {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   whileHover={{ 
                     y: -2, 
-                    transition: { duration: 0.2 },
-                    textShadow: "0 0 8px rgba(59, 130, 246, 0.8)"
+                    transition: { duration: 0.2 }
                   }}
                 >
                   {item}
@@ -161,12 +169,8 @@ const SerelixStudio = () => {
       </motion.nav>
 
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden">
-        {/* Background glow effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-background"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
-        
-        <div className="container mx-auto text-center relative z-10">
+      <section className="min-h-screen flex items-center justify-center px-6 relative">
+        <div className="container mx-auto text-center">
           <div className="max-w-4xl mx-auto">
             <motion.h1 
               className="text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight"
@@ -176,7 +180,7 @@ const SerelixStudio = () => {
             >
               Building Modern,{" "}
               <motion.span 
-                className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent"
+                className="text-primary"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 1 }}
@@ -207,7 +211,7 @@ const SerelixStudio = () => {
                 <Button 
                   variant="hero" 
                   size="lg" 
-                  className="shadow-glow hover:shadow-glow-lg"
+                  className=""
                   onClick={() => scrollToSection('projects')}
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />
@@ -222,7 +226,7 @@ const SerelixStudio = () => {
                 <Button 
                   variant="outline" 
                   size="lg" 
-                  className="border-glow hover:shadow-blue-glow"
+                  className=""
                   onClick={() => scrollToSection('contact')}
                 >
                   Get In Touch
@@ -272,7 +276,7 @@ const SerelixStudio = () => {
                 whileHover={{ scale: 1.03, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 group h-full border-glow">
+                <Card className="transition-all duration-300 group h-full border">
                   <CardHeader>
                     <div className="flex items-center justify-between mb-2">
                       <CardTitle className="text-2xl text-foreground group-hover:text-primary transition-colors">
@@ -304,7 +308,7 @@ const SerelixStudio = () => {
                           <Button 
                             variant="outline" 
                             size="sm" 
-                            className="w-full border-primary/50 hover:bg-primary/10"
+                            className="w-full"
                             asChild
                           >
                             <a 
@@ -331,7 +335,7 @@ const SerelixStudio = () => {
                 whileHover={{ scale: 1.03, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 group h-full border-glow">
+                <Card className="transition-all duration-300 group h-full border">
                   <CardHeader>
                     <div className="flex items-center justify-between mb-2">
                       <CardTitle className="text-2xl text-foreground group-hover:text-primary transition-colors">
@@ -361,7 +365,7 @@ const SerelixStudio = () => {
                           <Button 
                             variant="outline" 
                             size="sm" 
-                            className="w-full border-primary/50 hover:bg-primary/10"
+                            className="w-full"
                             disabled
                           >
                             <span className="flex items-center">
@@ -401,11 +405,11 @@ const SerelixStudio = () => {
                 whileHover={{ scale: 1.05, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 text-center h-full border-glow">
+                <Card className="transition-all duration-300 text-center h-full border">
                   <CardHeader>
                     <motion.div 
-                      className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-primary/30"
-                      whileHover={{ scale: 1.1, borderColor: "hsl(210 100% 60%)" }}
+                      className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-border"
+                      whileHover={{ scale: 1.1 }}
                       transition={{ duration: 0.3 }}
                     >
                       <img 
@@ -432,11 +436,11 @@ const SerelixStudio = () => {
                 whileHover={{ scale: 1.05, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 text-center h-full border-glow">
+                <Card className="transition-all duration-300 text-center h-full border">
                   <CardHeader>
                     <motion.div 
-                      className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-primary/30"
-                      whileHover={{ scale: 1.1, borderColor: "hsl(210 100% 60%)" }}
+                      className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-border"
+                      whileHover={{ scale: 1.1 }}
                       transition={{ duration: 0.3 }}
                     >
                       <img 
@@ -463,11 +467,11 @@ const SerelixStudio = () => {
                 whileHover={{ scale: 1.05, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 text-center h-full border-glow">
+                <Card className="transition-all duration-300 text-center h-full border">
                   <CardHeader>
                     <motion.div 
-                      className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-primary/30"
-                      whileHover={{ scale: 1.1, borderColor: "hsl(210 100% 60%)" }}
+                      className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-border"
+                      whileHover={{ scale: 1.1 }}
                       transition={{ duration: 0.3 }}
                     >
                       <img 
@@ -517,7 +521,7 @@ const SerelixStudio = () => {
                   <div className="flex items-center">
                     <div className="flex-1 text-right pr-8">
                       <motion.div
-                        className="bg-card border-glow rounded-lg p-6 shadow-card-blue"
+                        className="bg-card border rounded-lg p-6 shadow-card-blue"
                         whileHover={{ scale: 1.02, x: -10 }}
                         transition={{ duration: 0.3 }}
                       >
@@ -547,7 +551,7 @@ const SerelixStudio = () => {
                     </div>
                     <div className="flex-1 text-left pl-8">
                       <motion.div
-                        className="bg-card border-glow rounded-lg p-6 shadow-card-blue"
+                        className="bg-card border rounded-lg p-6 shadow-card-blue"
                         whileHover={{ scale: 1.02, x: 10 }}
                         transition={{ duration: 0.3 }}
                       >
@@ -569,7 +573,7 @@ const SerelixStudio = () => {
                   <div className="flex items-center">
                     <div className="flex-1 text-right pr-8">
                       <motion.div
-                        className="bg-card border-glow rounded-lg p-6 shadow-card-blue"
+                        className="bg-card border rounded-lg p-6 shadow-card-blue"
                         whileHover={{ scale: 1.02, x: -10 }}
                         transition={{ duration: 0.3 }}
                       >
@@ -599,7 +603,7 @@ const SerelixStudio = () => {
                     </div>
                     <div className="flex-1 text-left pl-8">
                       <motion.div
-                        className="bg-card border-glow rounded-lg p-6 shadow-card-blue"
+                        className="bg-card border rounded-lg p-6 shadow-card-blue"
                         whileHover={{ scale: 1.02, x: 10 }}
                         transition={{ duration: 0.3 }}
                       >
@@ -621,7 +625,7 @@ const SerelixStudio = () => {
                   <div className="flex items-center">
                     <div className="flex-1 text-right pr-8">
                       <motion.div
-                        className="bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/50 rounded-lg p-6 shadow-glow-lg"
+                        className="bg-card border rounded-lg p-6"
                         whileHover={{ scale: 1.02, x: -10 }}
                         transition={{ duration: 0.3 }}
                       >
@@ -667,7 +671,7 @@ const SerelixStudio = () => {
             <div className="grid md:grid-cols-2 gap-8">
               {/* Contact Form */}
               <AnimatedSection delay={0.3}>
-                <Card className="shadow-card-blue border-glow">
+                <Card className="border">
                   <CardHeader>
                     <CardTitle className="text-2xl">Send us a Message</CardTitle>
                     <CardDescription>Fill out the form and we'll get back to you soon</CardDescription>
@@ -746,7 +750,7 @@ const SerelixStudio = () => {
               {/* Contact Info */}
               <AnimatedSection delay={0.4}>
                 <div className="flex flex-col h-full space-y-6">
-                  <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 border-glow flex-1">
+                  <Card className="transition-all duration-300 border flex-1">
                     <CardContent className="p-6 h-full flex items-center">
                       <div className="flex items-start w-full">
                         <motion.div
@@ -771,7 +775,7 @@ const SerelixStudio = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 border-glow flex-1">
+                  <Card className="transition-all duration-300 border flex-1">
                     <CardContent className="p-6 h-full flex items-center">
                       <div className="flex items-start w-full">
                         <motion.div
@@ -820,7 +824,8 @@ const SerelixStudio = () => {
           </div>
         </footer>
       </AnimatedSection>
-    </div>
+      </div>
+    </>
   );
 };
 
