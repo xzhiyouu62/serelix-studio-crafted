@@ -1,3 +1,6 @@
 name = "serelix-contact-api"
 main = "worker.js"
 compatibility_date = "2023-12-01"
+
+[vars]
+DISCORD_WEBHOOK_URL = "REDACTED_WEBHOOK_URL"
