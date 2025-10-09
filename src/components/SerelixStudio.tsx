@@ -3,10 +3,14 @@ import { motion, useInView } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Mail, MessageCircle, Github, ExternalLink, Calendar, GitBranch, Rocket, Users, Code2, TestTube } from "lucide-react";
-import kaiyasiAvatar from '@/assets/kaiyasi-avatar.jpg';
-import ytseiungAvatar from '@/assets/ytseiung-avatar.jpg';
-import xzhiyouuAvatar from '@/assets/xzhiyouu-avatar.jpg';
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { Mail, MessageCircle, Github, ExternalLink, Calendar, GitBranch, Rocket, Users, Code2, TestTube, Send } from "lucide-react";
+import ytseiungAvatar from '@/assets/ytseiung.jpg';
+import kaiyasiAvatar from '@/assets/kaiyasi.jpg';
+import xzhiyouuAvatar from '@/assets/xzhiyouu.jpg';
 
 // Animation component for scroll-triggered animations
 const AnimatedSection = ({ children, delay = 0, className = "" }) => {
@@ -28,12 +32,73 @@ const AnimatedSection = ({ children, delay = 0, className = "" }) => {
 
 const SerelixStudio = () => {
   const [scrollY, setScrollY] = useState(0);
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const webhookUrl = 'https://discord.com/api/webhooks/1406668939987259413/h1tlyIfI8oyW3FTUw9KlhwTpS_dlM6omfpC5w3zXsGWOwuq5VMw78lTYu31wTfPb_HSe';
+      
+      const discordMessage = {
+        content: 'New Contact Form Submission:',
+        embeds: [{
+          title: 'New Contact Message!!!!!',
+          color: 3447003,
+          fields: [
+            { name: 'Name', value: formData.name, inline: true },
+            { name: 'Email', value: formData.email, inline: true },
+            { name: 'Subject', value: formData.subject, inline: false },
+            { name: 'Message', value: formData.message, inline: false }
+          ],
+          timestamp: new Date().toISOString()
+        }]
+      };
+
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(discordMessage)
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Message Sent!",
+          description: "We'll get back to you soon.",
+        });
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        throw new Error('Failed to send message');
+      }
+    } catch (error) {
+      toast({
+        title: "Failed to Send",
+        description: "Please try again later or email us directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -330,7 +395,7 @@ const SerelixStudio = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {/* kaiyasi */}
+            {/* ytseiung */}
             <AnimatedSection delay={0.1}>
               <motion.div
                 whileHover={{ scale: 1.05, y: -10 }}
@@ -344,24 +409,24 @@ const SerelixStudio = () => {
                       transition={{ duration: 0.3 }}
                     >
                       <img 
-                        src={kaiyasiAvatar} 
+                        src={ytseiungAvatar} 
                         alt="ytseiung profile" 
                         className="w-full h-full object-cover"
                       />
                     </motion.div>
                     <CardTitle className="text-xl text-foreground">ytseiung</CardTitle>
-                    <CardDescription>Technical Team Member</CardDescription>
+                    <CardDescription>CEO, Co-Founder</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Responsible for Forumkit and Intraverse development, bringing innovative solutions to campus communication.
+                      Leads the strategic vision and direction of Serelix Studio, driving innovation and fostering partnerships to build impactful applications.
                     </p>
                   </CardContent>
                 </Card>
               </motion.div>
             </AnimatedSection>
 
-            {/* ytseiung */}
+            {/* kaiyasi */}
             <AnimatedSection delay={0.3}>
               <motion.div
                 whileHover={{ scale: 1.05, y: -10 }}
@@ -375,17 +440,17 @@ const SerelixStudio = () => {
                       transition={{ duration: 0.3 }}
                     >
                       <img 
-                        src={ytseiungAvatar} 
+                        src={kaiyasiAvatar} 
                         alt="kaiyasi profile" 
                         className="w-full h-full object-cover"
                       />
                     </motion.div>
                     <CardTitle className="text-xl text-foreground">kaiyasi</CardTitle>
-                    <CardDescription>Technical Lead & Studio Manager</CardDescription>
+                    <CardDescription>Technology Director, Co-Founder</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Leads Intraverse development, manages studio operations, and drives other innovative project initiatives.
+                      Oversees technical architecture and development strategies, ensuring the highest standards in product quality and innovation.
                     </p>
                   </CardContent>
                 </Card>
@@ -412,11 +477,11 @@ const SerelixStudio = () => {
                       />
                     </motion.div>
                     <CardTitle className="text-xl text-foreground">xzhiyouu</CardTitle>
-                    <CardDescription>Technical Team Member</CardDescription>
+                    <CardDescription>Chief Engineer, Co-Founder</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Contributes to Intraverse and other project development, focusing on user experience and technical excellence.
+                      Leads engineering excellence and implementation, bringing technical expertise and innovative solutions to all our projects.
                     </p>
                   </CardContent>
                 </Card>
@@ -587,67 +652,152 @@ const SerelixStudio = () => {
       {/* Contact Section */}
       <section id="contact" className="py-20">
         <div className="container mx-auto px-6">
-          <div className="max-w-2xl mx-auto text-center">
-            <AnimatedSection delay={0}>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">Get In Touch</h2>
-            </AnimatedSection>
-            <AnimatedSection delay={0.2}>
-              <p className="text-lg text-muted-foreground mb-12">
-                Ready to collaborate or learn more about our projects? We'd love to hear from you.
-              </p>
-            </AnimatedSection>
-            
-            <div className="grid sm:grid-cols-2 gap-6">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <AnimatedSection delay={0}>
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">Get In Touch</h2>
+              </AnimatedSection>
+              <AnimatedSection delay={0.2}>
+                <p className="text-lg text-muted-foreground">
+                  Ready to collaborate or learn more about our projects? We'd love to hear from you.
+                </p>
+              </AnimatedSection>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Contact Form */}
               <AnimatedSection delay={0.3}>
-                <motion.div
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 border-glow">
-                    <CardContent className="p-6 text-center">
-                      <motion.div
-                        whileHover={{ scale: 1.2, rotate: 5 }}
-                        transition={{ duration: 0.3 }}
+                <Card className="shadow-card-blue border-glow">
+                  <CardHeader>
+                    <CardTitle className="text-2xl">Send us a Message</CardTitle>
+                    <CardDescription>Fill out the form and we'll get back to you soon</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="name">Name</Label>
+                        <Input
+                          id="name"
+                          name="name"
+                          placeholder="Your name"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          required
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                          id="email"
+                          name="email"
+                          type="email"
+                          placeholder="your@email.com"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          required
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="subject">Subject</Label>
+                        <Input
+                          id="subject"
+                          name="subject"
+                          placeholder="Message subject"
+                          value={formData.subject}
+                          onChange={handleInputChange}
+                          required
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="message">Message</Label>
+                        <Textarea
+                          id="message"
+                          name="message"
+                          placeholder="What would you like to tell us..."
+                          value={formData.message}
+                          onChange={handleInputChange}
+                          required
+                          disabled={isSubmitting}
+                          rows={5}
+                        />
+                      </div>
+                      <Button 
+                        type="submit" 
+                        className="w-full" 
+                        disabled={isSubmitting}
                       >
-                        <Mail className="w-8 h-8 text-primary mx-auto mb-4 drop-shadow-lg" />
-                      </motion.div>
-                      <h3 className="text-lg font-semibold text-foreground mb-2">Email</h3>
-                      <a 
-                        href="mailto:serelixstudio@gmail.com" 
-                        className="text-primary hover:text-primary-glow transition-colors"
-                      >
-                        serelixstudio@gmail.com
-                      </a>
-                    </CardContent>
-                  </Card>
-                </motion.div>
+                        {isSubmitting ? (
+                          <>Sending...</>
+                        ) : (
+                          <>
+                            <Send className="w-4 h-4 mr-2" />
+                            Send Message
+                          </>
+                        )}
+                      </Button>
+                    </form>
+                  </CardContent>
+                </Card>
               </AnimatedSection>
 
-              <AnimatedSection delay={0.5}>
-                <motion.div
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 border-glow">
-                    <CardContent className="p-6 text-center">
-                      <motion.div
-                        whileHover={{ scale: 1.2, rotate: -5 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <MessageCircle className="w-8 h-8 text-primary mx-auto mb-4 drop-shadow-lg" />
-                      </motion.div>
-                      <h3 className="text-lg font-semibold text-foreground mb-2">Discord</h3>
-                      <a 
-                        href="https://discord.gg/prF9KwUhGQ" 
-                        className="text-primary hover:text-primary-glow transition-colors"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Join our Discord
-                      </a>
+              {/* Contact Info */}
+              <AnimatedSection delay={0.4}>
+                <div className="flex flex-col h-full space-y-6">
+                  <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 border-glow flex-1">
+                    <CardContent className="p-6 h-full flex items-center">
+                      <div className="flex items-start w-full">
+                        <motion.div
+                          whileHover={{ scale: 1.2, rotate: 5 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <Mail className="w-6 h-6 text-primary mr-4 mt-1" />
+                        </motion.div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-foreground mb-2">Email</h3>
+                          <a 
+                            href="mailto:serelixstudio@gmail.com" 
+                            className="text-primary hover:text-primary-glow transition-colors"
+                          >
+                            serelixstudio@gmail.com
+                          </a>
+                          <p className="text-sm text-muted-foreground mt-2">
+                            We typically respond within 24-48 hours
+                          </p>
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
-                </motion.div>
+
+                  <Card className="shadow-card-blue hover:shadow-glow-lg transition-all duration-300 border-glow flex-1">
+                    <CardContent className="p-6 h-full flex items-center">
+                      <div className="flex items-start w-full">
+                        <motion.div
+                          whileHover={{ scale: 1.2, rotate: -5 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <MessageCircle className="w-6 h-6 text-primary mr-4 mt-1" />
+                        </motion.div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-foreground mb-2">Discord</h3>
+                          <a 
+                            href="https://discord.gg/prF9KwUhGQ" 
+                            className="text-primary hover:text-primary-glow transition-colors"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Join our Discord
+                          </a>
+                          <p className="text-sm text-muted-foreground mt-2">
+                            Join our community for instant communication
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               </AnimatedSection>
             </div>
           </div>
