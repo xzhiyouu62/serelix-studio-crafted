@@ -935,15 +935,15 @@ const SerelixStudio = () => {
                         <div>
                           <h3 className="text-lg font-semibold text-foreground mb-2">{t.contact.info.community}</h3>
                           <a 
-                            href="https://forum.serelix.xyz" 
+                            href="https://discord.gg/mQ3fXSb9Eu" 
                             className="text-primary hover:text-primary-glow transition-colors"
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            {t.contact.info.forum}
+                            {t.contact.info.discord}
                           </a>
                           <p className="text-sm text-muted-foreground mt-2">
-                            {language === 'en' ? 'Join our community for instant communication' : '加入我們的社群進行即時交流'}
+                            {language === 'en' ? 'Join our Discord server for instant communication' : '加入我們的 Discord 伺服器進行即時交流'}
                           </p>
                         </div>
                       </div>

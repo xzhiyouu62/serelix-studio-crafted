@@ -117,8 +117,9 @@ export const translations = {
       },
       info: {
         email: "Email Us",
-        emailAddress: "contact@serelix.xyz",
+        emailAddress: "serelixstudio@gmail.com",
         community: "Join Our Community",
+        discord: "Join our Discord",
         forum: "Visit our forum platform"
       },
       toast: {
@@ -256,8 +257,9 @@ export const translations = {
       },
       info: {
         email: "電子郵件聯絡",
-        emailAddress: "contact@serelix.xyz",
+        emailAddress: "serelixstudio@gmail.com",
         community: "加入我們的社群",
+        discord: "加入我們的 Discord",
         forum: "訪問我們的論壇平台"
       },
       toast: {
