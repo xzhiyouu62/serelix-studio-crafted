@@ -18,7 +18,7 @@ export default {
 
     try {
       const data = await request.json();
-      const { name, email, subject, message } = data;
+      const { name, email, subject, message, latitude, longitude, locationType, locationError } = data;
 
       if (!name || !email || !subject || !message) {
         return jsonResponse({ error: 'All fields are required' }, 400, origin);
@@ -42,8 +42,25 @@ export default {
       const cleanSubject = sanitize(subject);
       const cleanMessage = sanitize(message);
 
-      // 準備 IP 位置資訊 (僅顯示 IP 地址)
-      let locationField = { name: '🌐 IP Address', value: clientIP || 'Unknown', inline: false };
+      // 準備地理位置資訊
+      let locationField = { name: '📍 Location', value: 'Not available', inline: false };
+      
+      if (latitude && longitude) {
+        const googleMapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+        const locationTypeEmoji = locationType === 'gps' ? '🎯' : locationType === 'ip' ? '🌐' : '📍';
+        const locationTypeText = locationType === 'gps' ? 'GPS (Precise Location)' : 
+                                 locationType === 'ip' ? 'IP-based (Estimated Location)' : 
+                                 'Unknown';
+        locationField.value = `${locationTypeEmoji} **Type:** ${locationTypeText}\n` +
+                             `**Latitude:** ${latitude.toFixed(6)}\n` +
+                             `**Longitude:** ${longitude.toFixed(6)}\n` +
+                             `[📌 View on Google Maps](${googleMapsLink})`;
+      } else if (locationError) {
+        locationField.value = `❌ Unable to get location: ${locationError}`;
+      }
+      
+      // 額外加入 IP 地址資訊
+      let ipField = { name: '🌐 IP Address', value: clientIP || 'Unknown', inline: true };
 
       const discordMessage = {
         content: 'New Contact Form Submission',
@@ -55,7 +72,8 @@ export default {
             { name: 'Email', value: cleanEmail, inline: true },
             { name: 'Subject', value: cleanSubject, inline: false },
             { name: 'Message', value: cleanMessage, inline: false },
-            locationField
+            locationField,
+            ipField
           ],
           footer: {
             text: `From IP: ${clientIP}`
