@@ -17,10 +17,15 @@ export default {
     }
 
     try {
+      console.log('Received request from origin:', origin);
+      
       const data = await request.json();
+      console.log('Received data:', JSON.stringify(data));
+      
       const { name, email, subject, message, latitude, longitude, locationType, locationError } = data;
 
       if (!name || !email || !subject || !message) {
+        console.error('Missing required fields');
         return jsonResponse({ error: 'All fields are required' }, 400, origin);
       }
 
@@ -89,16 +94,22 @@ export default {
         return jsonResponse({ error: 'Server configuration error' }, 500, origin);
       }
 
+      console.log('Sending to Discord webhook...');
       const discordResponse = await fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(discordMessage)
       });
 
+      console.log('Discord response status:', discordResponse.status);
+      
       if (!discordResponse.ok) {
-        throw new Error('Failed to send to Discord');
+        const discordError = await discordResponse.text();
+        console.error('Discord error:', discordError);
+        throw new Error(`Discord API error: ${discordResponse.status} - ${discordError}`);
       }
 
+      console.log('Message sent successfully');
       return jsonResponse({ 
         success: true, 
         message: 'Message sent successfully' 
@@ -106,6 +117,7 @@ export default {
 
     } catch (error) {
       console.error('Error:', error);
+      console.error('Error stack:', error.stack);
       return jsonResponse({ 
         error: 'Failed to send message',
         details: error.message 
