@@ -313,11 +313,12 @@ const SerelixStudio = () => {
                 whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ duration: 0.2 }}
+                className="w-full sm:w-auto"
               >
                 <Button 
                   variant="hero" 
                   size="lg" 
-                  className=""
+                  className="w-full sm:w-48"
                   onClick={() => scrollToSection('projects')}
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />
@@ -328,11 +329,12 @@ const SerelixStudio = () => {
                 whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ duration: 0.2 }}
+                className="w-full sm:w-auto"
               >
                 <Button 
                   variant="outline" 
                   size="lg" 
-                  className=""
+                  className="w-full sm:w-48"
                   onClick={() => scrollToSection('contact')}
                 >
                   {t.hero.getInTouch}
