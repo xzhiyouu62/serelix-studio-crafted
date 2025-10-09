@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import serelixLogo from '@/assets/serelix-logo2.png';
+import serelixLogo from '@/assets/serelix-logo3.png';
 
 interface LoadingScreenProps {
   onLoadingComplete: () => void;

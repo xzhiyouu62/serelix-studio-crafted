@@ -22,7 +22,8 @@ export default defineConfig(({ mode }) => ({
       output: {
         assetFileNames: (assetInfo) => {
           const name = assetInfo.name || '';
-          if (name.includes('serelix-logo2.ico') || 
+          if (name.includes('serelix-logo3.png') || 
+              name.includes('serelix-logo2.ico') || 
               name.includes('serelix-logo2.png') || 
               name.includes('serelix-logo.png')) {
             return '[name][extname]';
