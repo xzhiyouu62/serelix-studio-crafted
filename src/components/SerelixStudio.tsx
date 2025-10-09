@@ -565,17 +565,17 @@ const SerelixStudio = () => {
 
           <div className="max-w-4xl mx-auto">
             <div className="relative">
-              {/* Timeline line */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-primary/20 via-primary/40 to-primary/20"></div>
+              <div className="absolute left-8 md:left-1/2 md:transform md:-translate-x-1/2 w-1 h-full bg-gradient-to-b from-primary/20 via-primary/40 to-primary/20"></div>
               
               {/* Timeline items */}
               <div className="space-y-12">
                 {/* 2024 Q1 - Studio Formation */}
                 <AnimatedSection delay={0.1}>
                   <div className="flex items-center">
-                    <div className="flex-1 text-right pr-8">
+                    {/* 手機版：隱藏左側空白 */}
+                    <div className="hidden md:block flex-1 text-right pr-8">
                       <motion.div
-                        className="bg-card border rounded-lg p-6 shadow-card-blue"
+                        className="bg-card border rounded-lg p-6"
                         whileHover={{ scale: 1.02, x: -10 }}
                         transition={{ duration: 0.3 }}
                       >
@@ -589,23 +589,39 @@ const SerelixStudio = () => {
                         <span className="text-sm text-primary font-semibold">Q1 2024</span>
                       </motion.div>
                     </div>
-                    <div className="relative z-10">
+                    <div className="relative z-10 flex-shrink-0">
                       <div className="w-4 h-4 bg-primary rounded-full border-4 border-background"></div>
                     </div>
-                    <div className="flex-1 pl-8"></div>
+                    {/* 手機版：顯示在右側 */}
+                    <div className="flex-1 pl-8">
+                      <motion.div
+                        className="bg-card border rounded-lg p-6 md:hidden"
+                        whileHover={{ scale: 1.02 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <div className="flex items-center mb-3">
+                          <Users className="w-6 h-6 text-primary mr-2" />
+                          <h3 className="text-xl font-bold text-foreground">Studio Formation</h3>
+                        </div>
+                        <p className="text-muted-foreground mb-2">
+                          Serelix Studio was founded with the vision of creating modern applications that connect communities.
+                        </p>
+                        <span className="text-sm text-primary font-semibold">Q1 2024</span>
+                      </motion.div>
+                    </div>
                   </div>
                 </AnimatedSection>
 
                 {/* 2024 Q2 - Forumkit Concept */}
                 <AnimatedSection delay={0.2}>
                   <div className="flex items-center">
-                    <div className="flex-1 pr-8"></div>
-                    <div className="relative z-10">
+                    <div className="hidden md:block flex-1 pr-8"></div>
+                    <div className="relative z-10 flex-shrink-0">
                       <div className="w-4 h-4 bg-primary rounded-full border-4 border-background"></div>
                     </div>
                     <div className="flex-1 text-left pl-8">
                       <motion.div
-                        className="bg-card border rounded-lg p-6 shadow-card-blue"
+                        className="bg-card border rounded-lg p-6"
                         whileHover={{ scale: 1.02, x: 10 }}
                         transition={{ duration: 0.3 }}
                       >
@@ -625,9 +641,9 @@ const SerelixStudio = () => {
                 {/* 2024 Q3 - Development Start */}
                 <AnimatedSection delay={0.3}>
                   <div className="flex items-center">
-                    <div className="flex-1 text-right pr-8">
+                    <div className="hidden md:block flex-1 text-right pr-8">
                       <motion.div
-                        className="bg-card border rounded-lg p-6 shadow-card-blue"
+                        className="bg-card border rounded-lg p-6"
                         whileHover={{ scale: 1.02, x: -10 }}
                         transition={{ duration: 0.3 }}
                       >
@@ -641,23 +657,38 @@ const SerelixStudio = () => {
                         <span className="text-sm text-primary font-semibold">Q3 2024</span>
                       </motion.div>
                     </div>
-                    <div className="relative z-10">
+                    <div className="relative z-10 flex-shrink-0">
                       <div className="w-4 h-4 bg-primary rounded-full border-4 border-background"></div>
                     </div>
-                    <div className="flex-1 pl-8"></div>
+                    <div className="flex-1 pl-8">
+                      <motion.div
+                        className="bg-card border rounded-lg p-6 md:hidden"
+                        whileHover={{ scale: 1.02 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <div className="flex items-center mb-3">
+                          <GitBranch className="w-6 h-6 text-primary mr-2" />
+                          <h3 className="text-xl font-bold text-foreground">Development Kickoff</h3>
+                        </div>
+                        <p className="text-muted-foreground mb-2">
+                          Active development phase begins for both Forumkit and Intraverse projects with full team collaboration.
+                        </p>
+                        <span className="text-sm text-primary font-semibold">Q3 2024</span>
+                      </motion.div>
+                    </div>
                   </div>
                 </AnimatedSection>
 
                 {/* 2024 Q4 - Beta Testing */}
                 <AnimatedSection delay={0.4}>
                   <div className="flex items-center">
-                    <div className="flex-1 pr-8"></div>
-                    <div className="relative z-10">
+                    <div className="hidden md:block flex-1 pr-8"></div>
+                    <div className="relative z-10 flex-shrink-0">
                       <div className="w-4 h-4 bg-primary rounded-full border-4 border-background"></div>
                     </div>
                     <div className="flex-1 text-left pl-8">
                       <motion.div
-                        className="bg-card border rounded-lg p-6 shadow-card-blue"
+                        className="bg-card border rounded-lg p-6"
                         whileHover={{ scale: 1.02, x: 10 }}
                         transition={{ duration: 0.3 }}
                       >
@@ -677,7 +708,7 @@ const SerelixStudio = () => {
                 {/* 2025 Q3 - Public Launch */}
                 <AnimatedSection delay={0.5}>
                   <div className="flex items-center">
-                    <div className="flex-1 text-right pr-8">
+                    <div className="hidden md:block flex-1 text-right pr-8">
                       <motion.div
                         className="bg-card border rounded-lg p-6"
                         whileHover={{ scale: 1.02, x: -10 }}
@@ -693,12 +724,27 @@ const SerelixStudio = () => {
                         <span className="text-sm text-primary font-semibold">September 2025</span>
                       </motion.div>
                     </div>
-                    <div className="relative z-10">
+                    <div className="relative z-10 flex-shrink-0">
                       <div className="w-6 h-6 bg-primary rounded-full border-4 border-background flex items-center justify-center">
                         <div className="w-2 h-2 bg-background rounded-full"></div>
                       </div>
                     </div>
-                    <div className="flex-1 pl-8"></div>
+                    <div className="flex-1 pl-8">
+                      <motion.div
+                        className="bg-card border rounded-lg p-6 md:hidden"
+                        whileHover={{ scale: 1.02 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <div className="flex items-center mb-3">
+                          <Rocket className="w-6 h-6 text-primary mr-2" />
+                          <h3 className="text-xl font-bold text-foreground">Forumkit Launch</h3>
+                        </div>
+                        <p className="text-muted-foreground mb-2">
+                          Official public launch of Forumkit anonymous platform, opening services to university and campus communities.
+                        </p>
+                        <span className="text-sm text-primary font-semibold">September 2025</span>
+                      </motion.div>
+                    </div>
                   </div>
                 </AnimatedSection>
               </div>
