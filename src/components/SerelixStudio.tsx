@@ -7,11 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, MessageCircle, Github, ExternalLink, Calendar, GitBranch, Rocket, Users, Code2, TestTube, Send, Menu, X } from "lucide-react";
+import { Mail, MessageCircle, Github, ExternalLink, Calendar, GitBranch, Rocket, Users, Code2, TestTube, Send, Menu, X, Languages } from "lucide-react";
 import ytseiungAvatar from '@/assets/ytseiung.jpg';
 import kaiyasiAvatar from '@/assets/kaiyasi.jpg';
 import xzhiyouuAvatar from '@/assets/xzhiyouu.jpg';
 import LoadingScreen from './LoadingScreen';
+import { translations, Language } from '@/i18n/translations';
 
 // Animation component for scroll-triggered animations
 const AnimatedSection = ({ children, delay = 0, className = "" }) => {
@@ -37,12 +38,27 @@ const SerelixStudio = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [language, setLanguage] = useState<Language>(() => {
+    // 從 localStorage 讀取或使用預設語言
+    const saved = localStorage.getItem('language');
+    return (saved as Language) || 'en';
+  });
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
     message: ''
   });
+
+  // 獲取當前語言的翻譯
+  const t = translations[language];
+
+  // 語言切換功能
+  const toggleLanguage = () => {
+    const newLang: Language = language === 'en' ? 'zh' : 'en';
+    setLanguage(newLang);
+    localStorage.setItem('language', newLang);
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -65,8 +81,8 @@ const SerelixStudio = () => {
       const now = Date.now();
       if (lastSubmit && now - parseInt(lastSubmit) < 60000) {
         toast({
-          title: "Please wait",
-          description: "You can only submit once per minute. Please try again later.",
+          title: t.contact.toast.rateLimit.title,
+          description: t.contact.toast.rateLimit.description,
           variant: "destructive",
         });
         setIsSubmitting(false);
@@ -99,8 +115,8 @@ const SerelixStudio = () => {
       if (response.ok) {
         localStorage.setItem('lastFormSubmit', now.toString());
         toast({
-          title: "Message Sent!",
-          description: "We'll get back to you soon.",
+          title: t.contact.toast.success.title,
+          description: t.contact.toast.success.description,
         });
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
@@ -108,8 +124,8 @@ const SerelixStudio = () => {
       }
     } catch (error) {
       toast({
-        title: "Failed to Send",
-        description: "Please try again later or email us directly.",
+        title: t.contact.toast.error.title,
+        description: t.contact.toast.error.description,
         variant: "destructive",
       });
     } finally {
@@ -164,11 +180,17 @@ const SerelixStudio = () => {
             </motion.div>
             
             {/* Desktop Navigation */}
-            <div className="hidden md:flex space-x-8">
-              {["About", "Projects", "Team", "Timeline", "Contact"].map((item, index) => (
+            <div className="hidden md:flex space-x-8 items-center">
+              {[
+                { key: "about", label: t.nav.about },
+                { key: "projects", label: t.nav.projects },
+                { key: "team", label: t.nav.team },
+                { key: "timeline", label: t.nav.timeline },
+                { key: "contact", label: t.nav.contact }
+              ].map((item, index) => (
                 <motion.a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
+                  key={item.key}
+                  href={`#${item.key}`}
                   className="text-muted-foreground hover:text-primary transition-colors relative"
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -178,19 +200,42 @@ const SerelixStudio = () => {
                     transition: { duration: 0.2 }
                   }}
                 >
-                  {item}
+                  {item.label}
                 </motion.a>
               ))}
+              
+              {/* Language Toggle Button */}
+              <motion.button
+                onClick={toggleLanguage}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-accent hover:bg-accent/80 text-foreground transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                title={language === 'en' ? 'Switch to 中文' : 'Switch to English'}
+              >
+                <Languages size={18} />
+                <span className="text-sm font-medium">{language === 'en' ? '中文' : 'EN'}</span>
+              </motion.button>
             </div>
 
-            {/* Mobile Menu Button */}
-            <motion.button
-              className="md:hidden text-foreground"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              whileTap={{ scale: 0.95 }}
-            >
-              {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-            </motion.button>
+            {/* Mobile Menu Button & Language Toggle */}
+            <div className="md:hidden flex items-center gap-2">
+              <motion.button
+                onClick={toggleLanguage}
+                className="flex items-center gap-1 px-2 py-1 rounded-lg bg-accent text-foreground"
+                whileTap={{ scale: 0.95 }}
+              >
+                <Languages size={16} />
+                <span className="text-xs font-medium">{language === 'en' ? '中' : 'EN'}</span>
+              </motion.button>
+              
+              <motion.button
+                className="text-foreground"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                whileTap={{ scale: 0.95 }}
+              >
+                {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+              </motion.button>
+            </div>
           </div>
 
           {/* Mobile Menu */}
@@ -203,17 +248,23 @@ const SerelixStudio = () => {
               className="md:hidden mt-4 pb-4"
             >
               <div className="flex flex-col space-y-4">
-                {["About", "Projects", "Team", "Timeline", "Contact"].map((item, index) => (
+                {[
+                  { key: "about", label: t.nav.about },
+                  { key: "projects", label: t.nav.projects },
+                  { key: "team", label: t.nav.team },
+                  { key: "timeline", label: t.nav.timeline },
+                  { key: "contact", label: t.nav.contact }
+                ].map((item, index) => (
                   <motion.a
-                    key={item}
-                    href={`#${item.toLowerCase()}`}
-                    onClick={() => scrollToSection(item.toLowerCase())}
+                    key={item.key}
+                    href={`#${item.key}`}
+                    onClick={() => scrollToSection(item.key)}
                     className="text-muted-foreground hover:text-primary transition-colors py-2 px-4 rounded-lg hover:bg-accent"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.1 }}
                   >
-                    {item}
+                    {item.label}
                   </motion.a>
                 ))}
               </div>
@@ -231,15 +282,16 @@ const SerelixStudio = () => {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
+              key={`hero-title-${language}`}
             >
-              Building Modern,{" "}
+              {t.hero.title}{" "}
               <motion.span 
                 className="text-primary"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 1 }}
               >
-                Impactful Applications
+                {t.hero.titleHighlight}
               </motion.span>
             </motion.h1>
             <motion.p 
@@ -247,9 +299,9 @@ const SerelixStudio = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
+              key={`hero-desc-${language}`}
             >
-              Serelix Studio is a project-based development studio focused on creating modern applications 
-              that connect communities and enhance digital experiences.
+              {t.hero.description}
             </motion.p>
             <motion.div 
               className="flex flex-col sm:flex-row gap-4 justify-center"
@@ -269,7 +321,7 @@ const SerelixStudio = () => {
                   onClick={() => scrollToSection('projects')}
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />
-                  View Our Work
+                  {t.hero.viewWork}
                 </Button>
               </motion.div>
               <motion.div
@@ -283,7 +335,7 @@ const SerelixStudio = () => {
                   className=""
                   onClick={() => scrollToSection('contact')}
                 >
-                  Get In Touch
+                  {t.hero.getInTouch}
                 </Button>
               </motion.div>
             </motion.div>
@@ -296,13 +348,11 @@ const SerelixStudio = () => {
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center">
             <AnimatedSection delay={0}>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">About Serelix Studio</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">{t.about.title}</h2>
             </AnimatedSection>
             <AnimatedSection delay={0.2}>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                We are a dedicated team of developers passionate about creating innovative solutions for modern challenges. 
-                Our focus lies in building applications that foster community engagement, streamline campus life, and 
-                enhance digital interactions through thoughtful design and robust development practices.
+                {t.about.description}
               </p>
             </AnimatedSection>
           </div>
@@ -314,11 +364,11 @@ const SerelixStudio = () => {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <AnimatedSection delay={0}>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Our Projects</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">{t.projects.title}</h2>
             </AnimatedSection>
             <AnimatedSection delay={0.2}>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Innovative applications designed to connect communities and enhance digital experiences
+                {t.projects.subtitle}
               </p>
             </AnimatedSection>
           </div>
@@ -334,25 +384,23 @@ const SerelixStudio = () => {
                   <CardHeader>
                     <div className="flex items-center justify-between mb-2">
                       <CardTitle className="text-2xl text-foreground group-hover:text-primary transition-colors">
-                        Forumkit
+                        {t.projects.forumkit.title}
                       </CardTitle>
-                      <Badge variant="secondary">Forum Platform</Badge>
+                      <Badge variant="secondary">{t.projects.forumkit.badge}</Badge>
                     </div>
                     <CardDescription className="text-base">
-                      A modernized anonymous forum platform designed specifically for schools and campuses
+                      {t.projects.forumkit.description}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <p className="text-muted-foreground">
-                        Forumkit provides a safe, anonymous space for students to discuss topics, 
-                        share experiences, and connect with their campus community through modern, 
-                        intuitive forum functionality.
+                        {t.projects.forumkit.details}
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        <Badge variant="outline">Anonymous</Badge>
-                        <Badge variant="outline">Campus-focused</Badge>
-                        <Badge variant="outline">Community</Badge>
+                        {t.projects.forumkit.tags.map((tag, index) => (
+                          <Badge key={index} variant="outline">{tag}</Badge>
+                        ))}
                       </div>
                       <div className="pt-4">
                         <motion.div
@@ -372,7 +420,7 @@ const SerelixStudio = () => {
                               className="flex items-center"
                             >
                               <ExternalLink className="w-4 h-4 mr-2" />
-                              Visit Forum
+                              {t.projects.forumkit.button}
                             </a>
                           </Button>
                         </motion.div>
@@ -393,23 +441,23 @@ const SerelixStudio = () => {
                   <CardHeader>
                     <div className="flex items-center justify-between mb-2">
                       <CardTitle className="text-2xl text-foreground group-hover:text-primary transition-colors">
-                        Intraverse
+                        {t.projects.intraverse.title}
                       </CardTitle>
-                      <Badge variant="secondary">Campus App</Badge>
+                      <Badge variant="secondary">{t.projects.intraverse.badge}</Badge>
                     </div>
                     <CardDescription className="text-base">
-                      A comprehensive campus service application designed to connect students with essential tools and features
+                      {t.projects.intraverse.description}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <p className="text-muted-foreground">
-                        Intraverse simplifies campus life by uniting essential services, tools, and information in one intuitive app for modern students.
+                        {t.projects.intraverse.details}
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        <Badge variant="outline">Student Services</Badge>
-                        <Badge variant="outline">Campus Tools</Badge>
-                        <Badge variant="outline">Integration</Badge>
+                        {t.projects.intraverse.tags.map((tag, index) => (
+                          <Badge key={index} variant="outline">{tag}</Badge>
+                        ))}
                       </div>
                       <div className="pt-4">
                         <motion.div
@@ -424,7 +472,7 @@ const SerelixStudio = () => {
                           >
                             <span className="flex items-center">
                               <Calendar className="w-4 h-4 mr-2" />
-                              Coming Soon
+                              {t.projects.intraverse.button}
                             </span>
                           </Button>
                         </motion.div>
@@ -443,11 +491,11 @@ const SerelixStudio = () => {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <AnimatedSection delay={0}>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Our Team</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">{t.team.title}</h2>
             </AnimatedSection>
             <AnimatedSection delay={0.2}>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Meet the talented individuals behind Serelix Studio's innovative projects
+                {t.team.subtitle}
               </p>
             </AnimatedSection>
           </div>
@@ -473,11 +521,11 @@ const SerelixStudio = () => {
                       />
                     </motion.div>
                     <CardTitle className="text-xl text-foreground">ytseiung</CardTitle>
-                    <CardDescription>CEO, Co-Founder</CardDescription>
+                    <CardDescription>{t.team.members.ytseiung.role}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Leads the strategic vision and direction of Serelix Studio, driving innovation and fostering partnerships to build impactful applications.
+                      {t.team.members.ytseiung.bio}
                     </p>
                   </CardContent>
                 </Card>
@@ -504,11 +552,11 @@ const SerelixStudio = () => {
                       />
                     </motion.div>
                     <CardTitle className="text-xl text-foreground">kaiyasi</CardTitle>
-                    <CardDescription>Technology Director, Co-Founder</CardDescription>
+                    <CardDescription>{t.team.members.kaiyasi.role}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Oversees technical architecture and development strategies, ensuring the highest standards in product quality and innovation.
+                      {t.team.members.kaiyasi.bio}
                     </p>
                   </CardContent>
                 </Card>
@@ -535,11 +583,11 @@ const SerelixStudio = () => {
                       />
                     </motion.div>
                     <CardTitle className="text-xl text-foreground">xzhiyouu</CardTitle>
-                    <CardDescription>Chief Engineer, Co-Founder</CardDescription>
+                    <CardDescription>{t.team.members.xzhiyouu.role}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Leads engineering excellence and implementation, bringing technical expertise and innovative solutions to all our projects.
+                      {t.team.members.xzhiyouu.bio}
                     </p>
                   </CardContent>
                 </Card>
@@ -554,11 +602,11 @@ const SerelixStudio = () => {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <AnimatedSection delay={0}>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Development Timeline</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">{t.timeline.title}</h2>
             </AnimatedSection>
             <AnimatedSection delay={0.2}>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Our journey of building innovative applications and growing as a development studio
+                {t.timeline.subtitle}
               </p>
             </AnimatedSection>
           </div>
@@ -581,12 +629,12 @@ const SerelixStudio = () => {
                       >
                         <div className="flex items-center justify-end mb-3">
                           <Users className="w-6 h-6 text-primary mr-2" />
-                          <h3 className="text-xl font-bold text-foreground">Studio Formation</h3>
+                          <h3 className="text-xl font-bold text-foreground">{t.timeline.events.q1_2024.title}</h3>
                         </div>
                         <p className="text-muted-foreground mb-2">
-                          Serelix Studio was founded with the vision of creating modern applications that connect communities.
+                          {t.timeline.events.q1_2024.description}
                         </p>
-                        <span className="text-sm text-primary font-semibold">Q1 2024</span>
+                        <span className="text-sm text-primary font-semibold">{t.timeline.events.q1_2024.date}</span>
                       </motion.div>
                     </div>
                     <div className="relative z-10 flex-shrink-0">
@@ -601,12 +649,12 @@ const SerelixStudio = () => {
                       >
                         <div className="flex items-center mb-3">
                           <Users className="w-6 h-6 text-primary mr-2" />
-                          <h3 className="text-xl font-bold text-foreground">Studio Formation</h3>
+                          <h3 className="text-xl font-bold text-foreground">{t.timeline.events.q1_2024.title}</h3>
                         </div>
                         <p className="text-muted-foreground mb-2">
-                          Serelix Studio was founded with the vision of creating modern applications that connect communities.
+                          {t.timeline.events.q1_2024.description}
                         </p>
-                        <span className="text-sm text-primary font-semibold">Q1 2024</span>
+                        <span className="text-sm text-primary font-semibold">{t.timeline.events.q1_2024.date}</span>
                       </motion.div>
                     </div>
                   </div>
@@ -627,12 +675,12 @@ const SerelixStudio = () => {
                       >
                         <div className="flex items-center mb-3">
                           <Code2 className="w-6 h-6 text-primary mr-2" />
-                          <h3 className="text-xl font-bold text-foreground">Forumkit Concept</h3>
+                          <h3 className="text-xl font-bold text-foreground">{t.timeline.events.q2_2024.title}</h3>
                         </div>
                         <p className="text-muted-foreground mb-2">
-                          Initial concept and design phase for the anonymous forum platform targeting campus communities.
+                          {t.timeline.events.q2_2024.description}
                         </p>
-                        <span className="text-sm text-primary font-semibold">Q2 2024</span>
+                        <span className="text-sm text-primary font-semibold">{t.timeline.events.q2_2024.date}</span>
                       </motion.div>
                     </div>
                   </div>
@@ -649,12 +697,12 @@ const SerelixStudio = () => {
                       >
                         <div className="flex items-center justify-end mb-3">
                           <GitBranch className="w-6 h-6 text-primary mr-2" />
-                          <h3 className="text-xl font-bold text-foreground">Development Kickoff</h3>
+                          <h3 className="text-xl font-bold text-foreground">{t.timeline.events.q3_2024.title}</h3>
                         </div>
                         <p className="text-muted-foreground mb-2">
-                          Active development phase begins for both Forumkit and Intraverse projects with full team collaboration.
+                          {t.timeline.events.q3_2024.description}
                         </p>
-                        <span className="text-sm text-primary font-semibold">Q3 2024</span>
+                        <span className="text-sm text-primary font-semibold">{t.timeline.events.q3_2024.date}</span>
                       </motion.div>
                     </div>
                     <div className="relative z-10 flex-shrink-0">
@@ -668,12 +716,12 @@ const SerelixStudio = () => {
                       >
                         <div className="flex items-center mb-3">
                           <GitBranch className="w-6 h-6 text-primary mr-2" />
-                          <h3 className="text-xl font-bold text-foreground">Development Kickoff</h3>
+                          <h3 className="text-xl font-bold text-foreground">{t.timeline.events.q3_2024.title}</h3>
                         </div>
                         <p className="text-muted-foreground mb-2">
-                          Active development phase begins for both Forumkit and Intraverse projects with full team collaboration.
+                          {t.timeline.events.q3_2024.description}
                         </p>
-                        <span className="text-sm text-primary font-semibold">Q3 2024</span>
+                        <span className="text-sm text-primary font-semibold">{t.timeline.events.q3_2024.date}</span>
                       </motion.div>
                     </div>
                   </div>
@@ -694,12 +742,12 @@ const SerelixStudio = () => {
                       >
                         <div className="flex items-center mb-3">
                           <TestTube className="w-6 h-6 text-primary mr-2" />
-                          <h3 className="text-xl font-bold text-foreground">Internal Testing</h3>
+                          <h3 className="text-xl font-bold text-foreground">{t.timeline.events.q4_2024.title}</h3>
                         </div>
                         <p className="text-muted-foreground mb-2">
-                          Extensive internal testing and refinement of core features, user interface improvements, and security implementations.
+                          {t.timeline.events.q4_2024.description}
                         </p>
-                        <span className="text-sm text-primary font-semibold">Q4 2024</span>
+                        <span className="text-sm text-primary font-semibold">{t.timeline.events.q4_2024.date}</span>
                       </motion.div>
                     </div>
                   </div>
@@ -716,12 +764,12 @@ const SerelixStudio = () => {
                       >
                         <div className="flex items-center justify-end mb-3">
                           <Rocket className="w-6 h-6 text-primary mr-2" />
-                          <h3 className="text-xl font-bold text-foreground">Forumkit Launch</h3>
+                          <h3 className="text-xl font-bold text-foreground">{t.timeline.events.q3_2025.title}</h3>
                         </div>
                         <p className="text-muted-foreground mb-2">
-                          Official public launch of Forumkit anonymous platform, opening services to university and campus communities.
+                          {t.timeline.events.q3_2025.description}
                         </p>
-                        <span className="text-sm text-primary font-semibold">September 2025</span>
+                        <span className="text-sm text-primary font-semibold">{t.timeline.events.q3_2025.date}</span>
                       </motion.div>
                     </div>
                     <div className="relative z-10 flex-shrink-0">
@@ -737,12 +785,12 @@ const SerelixStudio = () => {
                       >
                         <div className="flex items-center mb-3">
                           <Rocket className="w-6 h-6 text-primary mr-2" />
-                          <h3 className="text-xl font-bold text-foreground">Forumkit Launch</h3>
+                          <h3 className="text-xl font-bold text-foreground">{t.timeline.events.q3_2025.title}</h3>
                         </div>
                         <p className="text-muted-foreground mb-2">
-                          Official public launch of Forumkit anonymous platform, opening services to university and campus communities.
+                          {t.timeline.events.q3_2025.description}
                         </p>
-                        <span className="text-sm text-primary font-semibold">September 2025</span>
+                        <span className="text-sm text-primary font-semibold">{t.timeline.events.q3_2025.date}</span>
                       </motion.div>
                     </div>
                   </div>
@@ -759,11 +807,11 @@ const SerelixStudio = () => {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <AnimatedSection delay={0}>
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">Get In Touch</h2>
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">{t.contact.title}</h2>
               </AnimatedSection>
               <AnimatedSection delay={0.2}>
                 <p className="text-lg text-muted-foreground">
-                  Ready to collaborate or learn more about our projects? We'd love to hear from you.
+                  {t.contact.subtitle}
                 </p>
               </AnimatedSection>
             </div>
@@ -773,17 +821,17 @@ const SerelixStudio = () => {
               <AnimatedSection delay={0.3}>
                 <Card className="border">
                   <CardHeader>
-                    <CardTitle className="text-2xl">Send us a Message</CardTitle>
-                    <CardDescription>Fill out the form and we'll get back to you soon</CardDescription>
+                    <CardTitle className="text-2xl">{t.contact.title}</CardTitle>
+                    <CardDescription>{t.contact.subtitle}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="name">Name</Label>
+                        <Label htmlFor="name">{t.contact.form.name}</Label>
                         <Input
                           id="name"
                           name="name"
-                          placeholder="Your name"
+                          placeholder={t.contact.form.namePlaceholder}
                           value={formData.name}
                           onChange={handleInputChange}
                           required
@@ -791,12 +839,12 @@ const SerelixStudio = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="email">{t.contact.form.email}</Label>
                         <Input
                           id="email"
                           name="email"
                           type="email"
-                          placeholder="your@email.com"
+                          placeholder={t.contact.form.emailPlaceholder}
                           value={formData.email}
                           onChange={handleInputChange}
                           required
@@ -804,11 +852,11 @@ const SerelixStudio = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="subject">Subject</Label>
+                        <Label htmlFor="subject">{t.contact.form.subject}</Label>
                         <Input
                           id="subject"
                           name="subject"
-                          placeholder="Message subject"
+                          placeholder={t.contact.form.subjectPlaceholder}
                           value={formData.subject}
                           onChange={handleInputChange}
                           required
@@ -816,11 +864,11 @@ const SerelixStudio = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="message">Message</Label>
+                        <Label htmlFor="message">{t.contact.form.message}</Label>
                         <Textarea
                           id="message"
                           name="message"
-                          placeholder="What would you like to tell us..."
+                          placeholder={t.contact.form.messagePlaceholder}
                           value={formData.message}
                           onChange={handleInputChange}
                           required
@@ -834,11 +882,11 @@ const SerelixStudio = () => {
                         disabled={isSubmitting}
                       >
                         {isSubmitting ? (
-                          <>Sending...</>
+                          <>{t.contact.form.submitting}</>
                         ) : (
                           <>
                             <Send className="w-4 h-4 mr-2" />
-                            Send Message
+                            {t.contact.form.submit}
                           </>
                         )}
                       </Button>
@@ -860,15 +908,15 @@ const SerelixStudio = () => {
                           <Mail className="w-6 h-6 text-primary mr-4 mt-1" />
                         </motion.div>
                         <div>
-                          <h3 className="text-lg font-semibold text-foreground mb-2">Email</h3>
+                          <h3 className="text-lg font-semibold text-foreground mb-2">{t.contact.info.email}</h3>
                           <a 
                             href="mailto:serelixstudio@gmail.com" 
                             className="text-primary hover:text-primary-glow transition-colors"
                           >
-                            serelixstudio@gmail.com
+                            {t.contact.info.emailAddress}
                           </a>
                           <p className="text-sm text-muted-foreground mt-2">
-                            We typically respond within 24-48 hours
+                            {language === 'en' ? 'We typically respond within 24-48 hours' : '我們通常會在 24-48 小時內回覆'}
                           </p>
                         </div>
                       </div>
@@ -885,17 +933,17 @@ const SerelixStudio = () => {
                           <MessageCircle className="w-6 h-6 text-primary mr-4 mt-1" />
                         </motion.div>
                         <div>
-                          <h3 className="text-lg font-semibold text-foreground mb-2">Discord</h3>
+                          <h3 className="text-lg font-semibold text-foreground mb-2">{t.contact.info.community}</h3>
                           <a 
-                            href="https://discord.gg/prF9KwUhGQ" 
+                            href="https://forum.serelix.xyz" 
                             className="text-primary hover:text-primary-glow transition-colors"
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            Join our Discord
+                            {t.contact.info.forum}
                           </a>
                           <p className="text-sm text-muted-foreground mt-2">
-                            Join our community for instant communication
+                            {language === 'en' ? 'Join our community for instant communication' : '加入我們的社群進行即時交流'}
                           </p>
                         </div>
                       </div>

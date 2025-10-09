@@ -15,4 +15,19 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  publicDir: "public",
+  build: {
+    assetsInlineLimit: 0, // 確保圖片不會被 inline
+    rollupOptions: {
+      output: {
+        assetFileNames: (assetInfo) => {
+          // 保持 public 資料夾中的檔案路徑結構
+          if (assetInfo.name === 'serelix-logo2.ico') {
+            return '[name][extname]';
+          }
+          return 'assets/[name]-[hash][extname]';
+        },
+      },
+    },
+  },
 }));
