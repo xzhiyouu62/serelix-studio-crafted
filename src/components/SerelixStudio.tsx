@@ -89,26 +89,91 @@ const SerelixStudio = () => {
         return;
       }
 
-      const apiUrl = 'https://serelix-contact-api.nelson970602.workers.dev';
-      
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject,
-          message: formData.message
-        })
-      });
+      // 獲取 GPS 位置資訊
+      let latitude = null;
+      let longitude = null;
+      let locationType = 'none';
+      let locationError = null;
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to send message');
+      // 嘗試獲取 GPS 位置
+      try {
+        if (navigator.geolocation) {
+          const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+              enableHighAccuracy: true,
+              timeout: 5000,
+              maximumAge: 0
+            });
+          });
+          latitude = position.coords.latitude;
+          longitude = position.coords.longitude;
+          locationType = 'gps';
+        }
+      } catch (geoError: any) {
+        console.log('GPS location failed, trying IP-based location:', geoError);
+        locationError = geoError.message;
+        
+        // GPS 失敗後嘗試 IP 定位
+        try {
+          const ipLocationResponse = await fetch('https://ipapi.co/json/', {
+            signal: AbortSignal.timeout(5000)
+          });
+
+          if (ipLocationResponse.ok) {
+            const ipData = await ipLocationResponse.json();
+            if (ipData.latitude && ipData.longitude) {
+              latitude = ipData.latitude;
+              longitude = ipData.longitude;
+              locationType = 'ip';
+              locationError = null;
+            }
+          }
+        } catch (ipError) {
+          console.log('IP location also failed:', ipError);
+          locationError = 'Unable to determine location';
+        }
       }
 
-      const data = await response.json();
-      if (data.success) {
+      // 使用 Cloudflare Worker API 端點
+      const apiUrl = 'https://serelix-contact-api.nelson970602.workers.dev';
+      
+      const formPayload = {
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        latitude,
+        longitude,
+        locationType,
+        locationError
+      };
+
+      console.log('Sending to API:', apiUrl);
+      console.log('Payload:', formPayload);
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formPayload)
+      });
+
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+      
+      let responseData;
+      try {
+        responseData = await response.json();
+        console.log('Response data:', responseData);
+      } catch (parseError) {
+        console.error('Failed to parse response:', parseError);
+        const responseText = await response.text();
+        console.log('Response text:', responseText);
+        throw new Error('Invalid server response');
+      }
+
+      if (response.ok) {
         localStorage.setItem('lastFormSubmit', now.toString());
         toast({
           title: t.contact.toast.success.title,
@@ -116,12 +181,16 @@ const SerelixStudio = () => {
         });
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        throw new Error('Failed to send message');
+        const errorMsg = responseData.error || responseData.details || 'Failed to send message';
+        console.error('Server error:', errorMsg);
+        throw new Error(errorMsg);
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Submit error:', error);
+      console.error('Error stack:', error.stack);
       toast({
         title: t.contact.toast.error.title,
-        description: t.contact.toast.error.description,
+        description: error.message || t.contact.toast.error.description,
         variant: "destructive",
       });
     } finally {
