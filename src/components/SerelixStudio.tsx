@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, MessageCircle, Github, ExternalLink, Calendar, GitBranch, Rocket, Users, Code2, TestTube, Send } from "lucide-react";
+import { Mail, MessageCircle, Github, ExternalLink, Calendar, GitBranch, Rocket, Users, Code2, TestTube, Send, Menu, X } from "lucide-react";
 import ytseiungAvatar from '@/assets/ytseiung.jpg';
 import kaiyasiAvatar from '@/assets/kaiyasi.jpg';
 import xzhiyouuAvatar from '@/assets/xzhiyouu.jpg';
@@ -36,6 +36,7 @@ const SerelixStudio = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showContent, setShowContent] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -59,7 +60,20 @@ const SerelixStudio = () => {
     setIsSubmitting(true);
 
     try {
-      const webhookUrl = 'https://discord.com/api/webhooks/1406668939987259413/h1tlyIfI8oyW3FTUw9KlhwTpS_dlM6omfpC5w3zXsGWOwuq5VMw78lTYu31wTfPb_HSe';
+      // Simple client-side rate limiting
+      const lastSubmit = localStorage.getItem('lastFormSubmit');
+      const now = Date.now();
+      if (lastSubmit && now - parseInt(lastSubmit) < 60000) {
+        toast({
+          title: "Please wait",
+          description: "You can only submit once per minute. Please try again later.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTQwNjY2ODkzOTk4NzI1OTQxMy9oMXRseUlmSThveVczRlRVdzlLbGh3VHBTX2RsTTZvbWZwQzV3M3pYc0dXT3d1cTVWTXc3OGxUWXUzMXdUZlBiX0hTZQ==');
       
       const discordMessage = {
         content: 'New Contact Form Submission:',
@@ -83,6 +97,7 @@ const SerelixStudio = () => {
       });
 
       if (response.ok) {
+        localStorage.setItem('lastFormSubmit', now.toString());
         toast({
           title: "Message Sent!",
           description: "We'll get back to you soon.",
@@ -111,6 +126,7 @@ const SerelixStudio = () => {
         inline: 'nearest'
       });
     }
+    setMobileMenuOpen(false); // 關閉選單
   };
 
   const scrollToTop = () => {
@@ -146,6 +162,8 @@ const SerelixStudio = () => {
             >
               Serelix Studio
             </motion.div>
+            
+            {/* Desktop Navigation */}
             <div className="hidden md:flex space-x-8">
               {["About", "Projects", "Team", "Timeline", "Contact"].map((item, index) => (
                 <motion.a
@@ -164,7 +182,43 @@ const SerelixStudio = () => {
                 </motion.a>
               ))}
             </div>
+
+            {/* Mobile Menu Button */}
+            <motion.button
+              className="md:hidden text-foreground"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              whileTap={{ scale: 0.95 }}
+            >
+              {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            </motion.button>
           </div>
+
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="md:hidden mt-4 pb-4"
+            >
+              <div className="flex flex-col space-y-4">
+                {["About", "Projects", "Team", "Timeline", "Contact"].map((item, index) => (
+                  <motion.a
+                    key={item}
+                    href={`#${item.toLowerCase()}`}
+                    onClick={() => scrollToSection(item.toLowerCase())}
+                    className="text-muted-foreground hover:text-primary transition-colors py-2 px-4 rounded-lg hover:bg-accent"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                  >
+                    {item}
+                  </motion.a>
+                ))}
+              </div>
+            </motion.div>
+          )}
         </div>
       </motion.nav>
 
