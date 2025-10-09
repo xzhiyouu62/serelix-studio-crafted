@@ -17,12 +17,14 @@ export default defineConfig(({ mode }) => ({
   },
   publicDir: "public",
   build: {
-    assetsInlineLimit: 0, // 確保圖片不會被 inline
+    assetsInlineLimit: 0,
     rollupOptions: {
       output: {
         assetFileNames: (assetInfo) => {
-          // 保持 public 資料夾中的檔案路徑結構
-          if (assetInfo.name === 'serelix-logo2.ico') {
+          const name = assetInfo.name || '';
+          if (name.includes('serelix-logo2.ico') || 
+              name.includes('serelix-logo2.png') || 
+              name.includes('serelix-logo.png')) {
             return '[name][extname]';
           }
           return 'assets/[name]-[hash][extname]';
