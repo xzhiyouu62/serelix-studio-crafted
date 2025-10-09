@@ -89,30 +89,26 @@ const SerelixStudio = () => {
         return;
       }
 
-      const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTQwNjY2ODkzOTk4NzI1OTQxMy9oMXRseUlmSThveVczRlRVdzlLbGh3VHBTX2RsTTZvbWZwQzV3M3pYc0dXT3d1cTVWTXc3OGxUWXUzMXdUZlBiX0hTZQ==');
+      const apiUrl = 'https://serelix-contact-api.nelson970602.workers.dev';
       
-      const discordMessage = {
-        content: 'New Contact Form Submission:',
-        embeds: [{
-          title: 'New Contact Message!!!!!',
-          color: 3447003,
-          fields: [
-            { name: 'Name', value: formData.name, inline: true },
-            { name: 'Email', value: formData.email, inline: true },
-            { name: 'Subject', value: formData.subject, inline: false },
-            { name: 'Message', value: formData.message, inline: false }
-          ],
-          timestamp: new Date().toISOString()
-        }]
-      };
-
-      const response = await fetch(webhookUrl, {
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(discordMessage)
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message
+        })
       });
 
-      if (response.ok) {
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to send message');
+      }
+
+      const data = await response.json();
+      if (data.success) {
         localStorage.setItem('lastFormSubmit', now.toString());
         toast({
           title: t.contact.toast.success.title,
