@@ -3,4 +3,4 @@ main = "worker.js"
 compatibility_date = "2023-12-01"
 
 [vars]
-DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1406668939987259413/h1tlyIfI8oyW3FTUw9KlhwTpS_dlM6omfpC5w3zXsGWOwuq5VMw78lTYu31wTfPb_HSe"
+DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1430960028990439546/K1TzTiagrGJcWWBhByvCJn3GZ2pJYm6Z8wd0AkZZn9sw4bvlvaMu7Dqcsp8tUF0fPKwv"

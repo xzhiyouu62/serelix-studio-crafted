@@ -89,51 +89,6 @@ const SerelixStudio = () => {
         return;
       }
 
-      // 獲取 GPS 位置資訊
-      let latitude = null;
-      let longitude = null;
-      let locationType = 'none';
-      let locationError = null;
-
-      // 嘗試獲取 GPS 位置
-      try {
-        if (navigator.geolocation) {
-          const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject, {
-              enableHighAccuracy: true,
-              timeout: 5000,
-              maximumAge: 0
-            });
-          });
-          latitude = position.coords.latitude;
-          longitude = position.coords.longitude;
-          locationType = 'gps';
-        }
-      } catch (geoError: any) {
-        console.log('GPS location failed, trying IP-based location:', geoError);
-        locationError = geoError.message;
-        
-        // GPS 失敗後嘗試 IP 定位
-        try {
-          const ipLocationResponse = await fetch('https://ipapi.co/json/', {
-            signal: AbortSignal.timeout(5000)
-          });
-
-          if (ipLocationResponse.ok) {
-            const ipData = await ipLocationResponse.json();
-            if (ipData.latitude && ipData.longitude) {
-              latitude = ipData.latitude;
-              longitude = ipData.longitude;
-              locationType = 'ip';
-              locationError = null;
-            }
-          }
-        } catch (ipError) {
-          console.log('IP location also failed:', ipError);
-          locationError = 'Unable to determine location';
-        }
-      }
-
       // 使用 Cloudflare Worker API 端點
       const apiUrl = 'https://serelix-contact-api.nelson970602.workers.dev';
       
@@ -141,11 +96,7 @@ const SerelixStudio = () => {
         name: formData.name,
         email: formData.email,
         subject: formData.subject,
-        message: formData.message,
-        latitude,
-        longitude,
-        locationType,
-        locationError
+        message: formData.message
       };
 
       console.log('Sending to API:', apiUrl);
